@@ -26,6 +26,9 @@ class VolumePricingExtension < Spree::Extension
       def add_variant(variant, quantity=1)
         current_item = contains?(variant)
         price = variant.volume_price(quantity) # Added
+        # check for zone_pricing extension and convert if necessary
+        price = variant.zone_price(price) if defined?(variant.zone_price) and @country_id
+
         if current_item
           current_item.increment_quantity unless quantity > 1
           current_item.quantity = (current_item.quantity + quantity) if quantity > 1
